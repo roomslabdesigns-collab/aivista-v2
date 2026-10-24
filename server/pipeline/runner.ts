@@ -46,7 +46,9 @@ async function run(id: string, input: CompanyInput, mode: Mode, steps: StepState
   const persistSteps = () => {
     clearTimeout(persistTimer);
     persistTimer = setTimeout(() => {
-      void db.update(analyses).set({ steps: JSON.stringify(steps) }).where(eq(analyses.id, id));
+      // Drizzle queries only run when awaited/then'd, so a bare `void` would never execute.
+      db.update(analyses).set({ steps: JSON.stringify(steps) }).where(eq(analyses.id, id))
+        .then(undefined, (err) => console.warn(`[${id}] could not save progress`, err));
     }, 250);
   };
 

@@ -32,11 +32,9 @@ Keep both somewhere safe for step 2. The token is a password — don't share it 
    | `DATABASE_URL` | the Turso URL from step 1 |
    | `DATABASE_AUTH_TOKEN` | the Turso token from step 1 |
    | `GEMINI_API_KEY` | your Gemini key (or leave empty for demo mode only) |
-   | `CEREBRAS_API_KEY` | tester 1 — https://cloud.cerebras.ai |
+   | `GROQ_API_KEY` | tester 1 — https://console.groq.com/keys |
    | `MISTRAL_API_KEY` | tester 2 — https://console.mistral.ai |
-   | `GROQ_API_KEY` | tester 3 — https://console.groq.com/keys |
-   | `NVIDIA_API_KEY` | tester 4 — https://build.nvidia.com |
-   | `GITHUB_MODELS_TOKEN` | tester 5 — https://github.com/settings/tokens (Models: read) |
+   | `COHERE_API_KEY` | tester 3 — https://dashboard.cohere.com/api-keys |
 
    The testers are optional individually; live mode needs Gemini plus at least one of them.
 

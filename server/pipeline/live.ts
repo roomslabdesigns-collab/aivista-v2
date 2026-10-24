@@ -113,8 +113,17 @@ Rules:
         `These are AI assistant answers to buyer questions about ${site.category}. List the competing product/company brand names they recommend, most frequent first. Exclude "${input.companyName}" and generic terms.\n\n${sample}`,
         `{"brands": string[] (max 8)}`,
       );
-      const known = new Set([input.companyName, ...input.competitors].map((s) => s.toLowerCase()));
-      discovered = (res.brands ?? []).filter((b) => b && !known.has(b.toLowerCase())).slice(0, 6);
+      // "Zoho CRM" is the same brand as "Zoho": compare names without generic product words.
+      const core = (s: string) => s.toLowerCase().replace(/\b(crm|inc|software|app|ai|hq|platform|suite|cloud)\b/g, "").replace(/[^a-z0-9]/g, "");
+      const known = [input.companyName, ...input.competitors].map(core).filter(Boolean);
+      const isKnown = (b: string) => known.some((k) => core(b) === k || core(b).startsWith(k) || k.startsWith(core(b)));
+      for (const b of res.brands ?? []) {
+        if (b && core(b) && !isKnown(b)) {
+          discovered.push(b);
+          known.push(core(b));
+        }
+      }
+      discovered = discovered.slice(0, 6);
     } catch (err) {
       ctx.log(`Competitor discovery skipped: ${(err as Error).message.slice(0, 120)}`);
     }
