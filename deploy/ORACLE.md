@@ -92,7 +92,7 @@ like `https://140-238-1-2.sslip.io`. Have your own domain? Point its DNS **A rec
 nano ~/aivista/.env
 ```
 
-Fill in `GEMINI_API_KEY`, `OPENROUTER_API_KEY`, `GROQ_API_KEY` (and any others you have).
+Fill in `GEMINI_API_KEY`, `CEREBRAS_API_KEY`, `MISTRAL_API_KEY`, `GROQ_API_KEY`, `NVIDIA_API_KEY` and `GITHUB_MODELS_TOKEN`.
 Save with **Ctrl+O, Enter**, exit with **Ctrl+X**, then:
 
 ```bash

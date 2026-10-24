@@ -29,32 +29,40 @@ async function listModels(url: string, key?: string): Promise<{ id: string; [k: 
   return data?.data ?? [];
 }
 
-const NON_CHAT = /whisper|guard|safety|tts|playai|embed|moderation|vision-only|audio|ocr|compound|allam|prompt-guard/i;
-const WELL_KNOWN_VENDORS = ["google", "meta-llama", "deepseek", "qwen", "mistralai", "openai", "nvidia", "microsoft", "cohere"];
+const NON_CHAT = /whisper|guard|safety|tts|playai|embed|rerank|moderation|vision|-vl|clip|parse|reward|audio|ocr|compound|allam/i;
 
+/** Orders model ids so well-known vendors come before niche ones (used when preferred models disappear). */
+function byVendor(ids: string[], vendors: string[]) {
+  const rank = (id: string) => {
+    const i = vendors.indexOf(id.split("/")[0]);
+    return i === -1 ? vendors.length : i;
+  };
+  return ids.sort((a, b) => rank(a) - rank(b));
+}
+
+// Order matters: tester 1 → 5. Each provider contributes a different model family.
 export const PROVIDERS: ProviderDef[] = [
   {
-    id: "openrouter",
-    name: "OpenRouter",
-    baseUrl: "https://openrouter.ai/api/v1",
-    keyEnv: "OPENROUTER_API_KEY",
-    modelEnv: "OPENROUTER_MODEL",
-    // OpenRouter's free list changes often; Gemma adds a model family the other four providers don't cover.
-    preferred: ["google/gemma-4-31b-it:free", "google/gemma-4-26b-a4b-it:free", "nvidia/nemotron-3-super-120b-a12b:free"],
-    concurrency: 2,
-    minIntervalMs: 3200, // free models: ~20 requests / minute
-    extraHeaders: { "HTTP-Referer": "https://aivista.app", "X-Title": "AIVista" },
-    available: async () => {
-      const free = (await listModels("https://openrouter.ai/api/v1/models"))
-        .map((m) => m.id)
-        .filter((id) => id.endsWith(":free") && !NON_CHAT.test(id));
-      // If the preferred models disappear, fall back to well-known vendors before niche ones.
-      const rank = (id: string) => {
-        const i = WELL_KNOWN_VENDORS.indexOf(id.split("/")[0]);
-        return i === -1 ? WELL_KNOWN_VENDORS.length : i;
-      };
-      return free.sort((a, b) => rank(a) - rank(b));
-    },
+    id: "cerebras",
+    name: "Cerebras",
+    baseUrl: "https://api.cerebras.ai/v1",
+    keyEnv: "CEREBRAS_API_KEY",
+    modelEnv: "CEREBRAS_MODEL",
+    preferred: ["qwen-3-235b-a22b-instruct-2507", "qwen-3-32b", "zai-glm-4.7", "gpt-oss-120b"],
+    concurrency: 1,
+    minIntervalMs: 6500, // free: ~10 requests / minute
+    available: async (key) => (await listModels("https://api.cerebras.ai/v1/models", key)).map((m) => m.id),
+  },
+  {
+    id: "mistral",
+    name: "Mistral",
+    baseUrl: "https://api.mistral.ai/v1",
+    keyEnv: "MISTRAL_API_KEY",
+    modelEnv: "MISTRAL_MODEL",
+    preferred: ["mistral-small-latest", "mistral-medium-latest", "open-mistral-nemo"],
+    concurrency: 1,
+    minIntervalMs: 1300, // free: ~1 request / second
+    available: async (key) => (await listModels("https://api.mistral.ai/v1/models", key)).map((m) => m.id),
   },
   {
     id: "groq",
@@ -64,31 +72,25 @@ export const PROVIDERS: ProviderDef[] = [
     modelEnv: "GROQ_MODEL",
     preferred: ["llama-3.3-70b-versatile", "meta-llama/llama-4-maverick-17b-128e-instruct", "llama-3.1-8b-instant"],
     concurrency: 2,
-    minIntervalMs: 2100,
+    minIntervalMs: 2100, // free: 30 requests / minute
     available: async (key) =>
       (await listModels("https://api.groq.com/openai/v1/models", key)).filter((m) => m.active !== false && !NON_CHAT.test(m.id)).map((m) => m.id),
   },
   {
-    id: "cerebras",
-    name: "Cerebras",
-    baseUrl: "https://api.cerebras.ai/v1",
-    keyEnv: "CEREBRAS_API_KEY",
-    modelEnv: "CEREBRAS_MODEL",
-    preferred: ["qwen-3-235b-a22b-instruct-2507", "qwen-3-32b", "gpt-oss-120b"],
-    concurrency: 1,
-    minIntervalMs: 2100,
-    available: async (key) => (await listModels("https://api.cerebras.ai/v1/models", key)).map((m) => m.id),
-  },
-  {
-    id: "mistral",
-    name: "Mistral",
-    baseUrl: "https://api.mistral.ai/v1",
-    keyEnv: "MISTRAL_API_KEY",
-    modelEnv: "MISTRAL_MODEL",
-    preferred: ["mistral-small-latest", "open-mistral-nemo", "ministral-8b-latest"],
-    concurrency: 1,
-    minIntervalMs: 1300,
-    available: async (key) => (await listModels("https://api.mistral.ai/v1/models", key)).map((m) => m.id),
+    id: "nvidia",
+    name: "NVIDIA NIM",
+    baseUrl: "https://integrate.api.nvidia.com/v1",
+    keyEnv: "NVIDIA_API_KEY",
+    modelEnv: "NVIDIA_MODEL",
+    // Kimi / DeepSeek: model families none of the other testers cover.
+    preferred: ["moonshotai/kimi-k2.6", "moonshotai/kimi-k2-instruct", "deepseek-ai/deepseek-v3.1"],
+    concurrency: 2,
+    minIntervalMs: 1600, // free: ~40 requests / minute
+    available: async (key) =>
+      byVendor(
+        (await listModels("https://integrate.api.nvidia.com/v1/models", key)).map((m) => m.id).filter((id) => !NON_CHAT.test(id)),
+        ["moonshotai", "deepseek-ai", "z-ai", "qwen", "meta", "mistralai", "nvidia"],
+      ),
   },
   {
     id: "github",

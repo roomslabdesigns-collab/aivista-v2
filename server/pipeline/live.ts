@@ -81,7 +81,7 @@ Rules:
     // ── 4. AI search testing across every configured free LLM ────────
     ctx.step("testing", "running", "Discovering free models…");
     const models = await discoverModels(ctx.log);
-    if (!models.length) throw new Error("No AI assistants configured — add OPENROUTER_API_KEY or GROQ_API_KEY to .env");
+    if (!models.length) throw new Error("No AI assistants configured — add CEREBRAS_API_KEY, MISTRAL_API_KEY, GROQ_API_KEY, NVIDIA_API_KEY or GITHUB_MODELS_TOKEN");
     const total = models.length * queries.length;
     let done = 0;
     const responses: RawResponse[] = await Promise.all(

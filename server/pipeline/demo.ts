@@ -18,10 +18,10 @@ export const RELAY_SAMPLE: CompanyInput = {
 
 // The same five-assistant panel live mode uses by default: one model family per provider.
 const DEMO_MODELS: [string, string, boolean][] = [
-  ["Gemma 4 31B", "OpenRouter", false],
-  ["Llama 3.3 70B", "Groq", false],
   ["Qwen 3 235B A22B", "Cerebras", false],
   ["Mistral Small", "Mistral", false],
+  ["Llama 3.3 70B", "Groq", false],
+  ["Kimi K2.6", "NVIDIA NIM", false],
   ["GPT 4.1 Mini", "GitHub Models", false],
 ];
 

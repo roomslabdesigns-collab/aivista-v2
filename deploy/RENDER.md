@@ -32,8 +32,13 @@ Keep both somewhere safe for step 2. The token is a password — don't share it 
    | `DATABASE_URL` | the Turso URL from step 1 |
    | `DATABASE_AUTH_TOKEN` | the Turso token from step 1 |
    | `GEMINI_API_KEY` | your Gemini key (or leave empty for demo mode only) |
-   | `OPENROUTER_API_KEY` | your OpenRouter key (optional) |
-   | `GROQ_API_KEY` | your Groq key (optional) |
+   | `CEREBRAS_API_KEY` | tester 1 — https://cloud.cerebras.ai |
+   | `MISTRAL_API_KEY` | tester 2 — https://console.mistral.ai |
+   | `GROQ_API_KEY` | tester 3 — https://console.groq.com/keys |
+   | `NVIDIA_API_KEY` | tester 4 — https://build.nvidia.com |
+   | `GITHUB_MODELS_TOKEN` | tester 5 — https://github.com/settings/tokens (Models: read) |
+
+   The testers are optional individually; live mode needs Gemini plus at least one of them.
 
 5. Click **Apply**. The first build takes 3–5 minutes. When the status shows **Live**, open the
    `https://aivista-….onrender.com` link at the top of the service page.

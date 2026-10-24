@@ -46,10 +46,10 @@ each answer every query. Each analysis generates **7 customer queries** → 7 ×
 | Role | Provider | Default model | Key |
 |---|---|---|---|
 | Brain (queries, analysis, recommendations) | Google Gemini | Gemini 2.5 Flash | `GEMINI_API_KEY` — https://aistudio.google.com/apikey |
-| Assistant 1 | OpenRouter | Gemma 4 31B (free) | `OPENROUTER_API_KEY` — https://openrouter.ai/keys |
-| Assistant 2 | Groq | Llama 3.3 70B | `GROQ_API_KEY` — https://console.groq.com/keys |
-| Assistant 3 | Cerebras | Qwen 3 235B | `CEREBRAS_API_KEY` — https://cloud.cerebras.ai |
-| Assistant 4 | Mistral | Mistral Small | `MISTRAL_API_KEY` — https://console.mistral.ai |
+| Assistant 1 | Cerebras | Qwen 3 235B | `CEREBRAS_API_KEY` — https://cloud.cerebras.ai |
+| Assistant 2 | Mistral | Mistral Small | `MISTRAL_API_KEY` — https://console.mistral.ai |
+| Assistant 3 | Groq | Llama 3.3 70B | `GROQ_API_KEY` — https://console.groq.com/keys |
+| Assistant 4 | NVIDIA NIM | Kimi K2.6 | `NVIDIA_API_KEY` — https://build.nvidia.com |
 | Assistant 5 | GitHub Models | GPT-4.1 mini | `GITHUB_MODELS_TOKEN` — https://github.com/settings/tokens (Models: read) |
 
 1. Copy `.env.example` to `.env` and add the keys (on Render: service → **Environment**).
@@ -102,7 +102,7 @@ docker run -p 3001:3001 -v aivista-data:/app/data --env-file .env aivista
 | Crawling | fetch + Cheerio, same-domain crawl prioritizing pricing/product/compare pages; Playwright (headless Chromium) fallback for JS-rendered pages |
 | Auth | scrypt password hashing, hashed session tokens in SQLite, httpOnly cookies |
 | Scheduling | in-process scheduler (checks every minute) for monitoring re-runs |
-| AI | Gemini (brain) · OpenRouter free models, Groq, Cerebras, Mistral, GitHub Models (assistants under test) |
+| AI | Gemini (brain) · Cerebras, Mistral, Groq, NVIDIA NIM, GitHub Models (assistants under test) |
 
 ## How the numbers are computed
 
