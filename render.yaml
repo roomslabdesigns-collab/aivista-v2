@@ -1,14 +1,25 @@
 # Render Blueprint: https://render.com/docs/blueprint-spec
-# Render's free web services have no persistent disk, so use a free Turso database (DATABASE_URL + DATABASE_AUTH_TOKEN).
+# Free plan: 512 MB RAM, no persistent disk, sleeps after ~15 min without traffic.
+#  - Data lives in a free Turso database (DATABASE_URL + DATABASE_AUTH_TOKEN), so nothing is lost on restarts.
+#  - Keep it awake with a free uptime monitor pinging /api/config every 10 minutes (see deploy/RENDER.md).
+#  - Chromium doesn't fit in 512 MB, so JavaScript-rendered pages are crawled without it (CRAWL_JS_FALLBACK=false).
 services:
   - type: web
     name: aivista
-    runtime: docker
+    runtime: node
     plan: free
+    buildCommand: npm ci --no-audit --no-fund && npm run build
+    startCommand: npm start
     healthCheckPath: /api/config
     envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: CRAWL_JS_FALLBACK
+        value: "false"
+      - key: ALLOW_SIGNUP
+        value: "true"
       - key: DATABASE_URL
-        sync: false # libsql://<your-db>.turso.io
+        sync: false # libsql://<your-db>-<your-org>.turso.io
       - key: DATABASE_AUTH_TOKEN
         sync: false
       - key: GEMINI_API_KEY
@@ -17,5 +28,3 @@ services:
         sync: false
       - key: GROQ_API_KEY
         sync: false
-      - key: ALLOW_SIGNUP
-        value: "true"

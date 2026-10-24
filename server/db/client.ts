@@ -5,7 +5,11 @@ import { addedColumns, bootstrapSql } from "./schema.js";
 import * as schema from "./schema.js";
 
 const url = process.env.DATABASE_URL || "file:data/aivista.db";
-if (url.startsWith("file:")) mkdirSync("data", { recursive: true });
+if (url.startsWith("file:")) {
+  mkdirSync("data", { recursive: true });
+  // Render sets RENDER=true; its free disk is wiped on every restart and deploy.
+  if (process.env.RENDER) console.warn("WARNING: DATABASE_URL is not set — data will be lost on restart. Add your Turso database URL.");
+}
 
 const client = createClient({ url, authToken: process.env.DATABASE_AUTH_TOKEN || undefined });
 

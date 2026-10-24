@@ -54,7 +54,10 @@ per provider and retries on `429`; a 10-query run against ~15 models typically t
 
 The app is one Node process that serves both the UI and the API.
 
-**Recommended: Oracle Cloud Always Free** — free permanently, always on, enough memory for Chromium.
+**No card needed: Render free + Turso free** — step-by-step guide in [deploy/RENDER.md](deploy/RENDER.md).
+Uses the native Node runtime from `render.yaml`; a free uptime monitor keeps it awake for scheduled monitoring.
+
+**Oracle Cloud Always Free** (needs a card for identity verification) — free permanently, always on, enough memory for Chromium.
 Follow the step-by-step guide in [deploy/ORACLE.md](deploy/ORACLE.md); `deploy/oracle-setup.sh` does the server setup
 (Node.js, Chromium, Caddy with automatic HTTPS, systemd service) and `deploy/update.sh` deploys new commits.
 
