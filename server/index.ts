@@ -14,7 +14,7 @@ import { jsRenderingAvailable } from "./pipeline/crawl.js";
 import { RELAY_SAMPLE } from "./pipeline/demo.js";
 import { recoverInterrupted, startAnalysis, toSummary } from "./pipeline/runner.js";
 import { geminiReady } from "./providers/gemini.js";
-import { PROVIDERS, providerStatus } from "./providers/registry.js";
+import { PROVIDERS, TEST_MODEL_COUNT, providerStatus } from "./providers/registry.js";
 import { FREQUENCIES, createSchedule, listSchedules, nextRun, runScheduleNow, startScheduler } from "./scheduler.js";
 
 const PROD = process.argv.includes("--prod");
@@ -22,6 +22,9 @@ const app = express();
 app.set("trust proxy", 1); // behind Render/Fly/Railway proxies, so req.secure reflects HTTPS
 app.use(express.json({ limit: "1mb" }));
 app.use(attachUser);
+
+/** Customer queries generated per analysis (fixed, so every run is comparable over time). */
+const QUERY_COUNT = Math.max(3, Math.min(40, Number(process.env.QUERY_COUNT) || 7));
 
 const liveReady = () => geminiReady() && PROVIDERS.some((p) => !!process.env[p.keyEnv]);
 const ws = (req: Request) => req.user!.workspaceId;
@@ -49,6 +52,7 @@ app.get("/api/auth/me", (req, res) => {
 app.get("/api/config", async (_req, res) => {
   const config: AppConfig = {
     geminiReady: geminiReady(), liveReady: liveReady(), jsRendering: await jsRenderingAvailable(), providers: providerStatus(),
+    queryCount: QUERY_COUNT, testModelCount: TEST_MODEL_COUNT,
   };
   res.json(config);
 });
@@ -72,7 +76,7 @@ function parseInput(i: Partial<CompanyInput>): CompanyInput | null {
     targetMarket: i.targetMarket?.trim() ?? "",
     audience: i.audience?.trim() ?? "",
     competitors: (i.competitors ?? []).map((c) => c.trim()).filter(Boolean).slice(0, 8),
-    queryCount: Math.max(5, Math.min(40, Number(i.queryCount) || 10)),
+    queryCount: QUERY_COUNT,
   };
 }
 

@@ -260,6 +260,8 @@ export interface AppConfig {
   geminiReady: boolean;
   liveReady: boolean;
   jsRendering: boolean;
+  queryCount: number;
+  testModelCount: number;
   providers: { id: string; name: string; configured: boolean }[];
 }
 

@@ -8,17 +8,12 @@ import { useApp } from "../state";
 import { cx } from "./ui";
 
 const EMPTY = { websiteUrl: "", companyName: "", industry: "", targetMarket: "", audience: "", competitors: "" };
-const DEPTHS = [
-  { n: 10, label: "Quick scan", hint: "10 queries" },
-  { n: 20, label: "Standard", hint: "20 queries" },
-  { n: 30, label: "Deep", hint: "30 queries" },
-];
 
 export function NewAnalysisModal() {
   const { setModalOpen, launch, config } = useApp();
   const navigate = useNavigate();
   const [form, setForm] = useState(EMPTY);
-  const [queryCount, setQueryCount] = useState(10);
+  const queryCount = config?.queryCount ?? 7;
   const [mode, setMode] = useState<Mode>(config?.liveReady ? "live" : "demo");
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -29,7 +24,6 @@ export function NewAnalysisModal() {
   async function fillSample() {
     const s = await api.sample();
     setForm({ ...s, competitors: s.competitors.join(", ") });
-    setQueryCount(20);
     setMode("demo");
     setError(null);
   }
@@ -84,17 +78,10 @@ export function NewAnalysisModal() {
           <Field label="Target Audience (ICP)"><input value={form.audience} onChange={set("audience")} placeholder="Mid-market RevOps & Sales Directors" className={inputCls} /></Field>
           <Field label="Competitors (comma separated)"><input value={form.competitors} onChange={set("competitors")} placeholder="HubSpot, Salesforce, Pipedrive" className={inputCls} /></Field>
 
-          <Field label="Investigation depth">
-            <div className="grid grid-cols-3 gap-2">
-              {DEPTHS.map((d) => (
-                <button key={d.n} type="button" onClick={() => setQueryCount(d.n)}
-                  className={cx("rounded-xl px-3 py-2 text-left ring-1 transition", queryCount === d.n ? "bg-brand-50 ring-brand-500" : "ring-slate-200 hover:bg-slate-50")}>
-                  <div className="text-[13px] font-medium">{d.label}</div>
-                  <div className="text-[11px] text-slate-500">{d.hint}</div>
-                </button>
-              ))}
-            </div>
-          </Field>
+          <div className="rounded-xl bg-slate-50 px-4 py-3 text-[13px] text-slate-600">
+            The agent will generate <b>{queryCount} customer queries</b> and test each one across{" "}
+            <b>{config?.testModelCount ?? 5} AI assistants</b>.
+          </div>
 
           <Field label="Data source">
             <div className="grid grid-cols-2 gap-2">

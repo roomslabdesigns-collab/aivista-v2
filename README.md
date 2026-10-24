@@ -40,16 +40,25 @@ Without it the crawler still works; it just can't read pages that render entirel
 
 ## Live mode (real data, free APIs)
 
-1. Copy `.env.example` to `.env`
-2. Add free keys:
-   - `GEMINI_API_KEY` — https://aistudio.google.com/apikey (query generation, analysis, recommendations, and a Google-Search-grounded assistant that returns real citations)
-   - `OPENROUTER_API_KEY` — https://openrouter.ai/keys (free `:free` models are discovered automatically)
-   - `GROQ_API_KEY` — https://console.groq.com/keys
-   - Optional: `CEREBRAS_API_KEY`, `MISTRAL_API_KEY`, `GITHUB_MODELS_TOKEN`
-3. Restart `npm run dev`, click **New Analysis**, choose **Live**.
+Six free LLMs: **one "brain"** that generates the queries and does the analysis, and **five AI assistants** that
+each answer every query. Each analysis generates **7 customer queries** → 7 × 5 = 35 answers.
 
-A live run needs Gemini plus at least one testing provider. Free tiers are rate-limited, so the app queues calls
-per provider and retries on `429`; a 10-query run against ~15 models typically takes a few minutes.
+| Role | Provider | Default model | Key |
+|---|---|---|---|
+| Brain (queries, analysis, recommendations) | Google Gemini | Gemini 2.5 Flash | `GEMINI_API_KEY` — https://aistudio.google.com/apikey |
+| Assistant 1 | OpenRouter | Gemma 4 31B (free) | `OPENROUTER_API_KEY` — https://openrouter.ai/keys |
+| Assistant 2 | Groq | Llama 3.3 70B | `GROQ_API_KEY` — https://console.groq.com/keys |
+| Assistant 3 | Cerebras | Qwen 3 235B | `CEREBRAS_API_KEY` — https://cloud.cerebras.ai |
+| Assistant 4 | Mistral | Mistral Small | `MISTRAL_API_KEY` — https://console.mistral.ai |
+| Assistant 5 | GitHub Models | GPT-4.1 mini | `GITHUB_MODELS_TOKEN` — https://github.com/settings/tokens (Models: read) |
+
+1. Copy `.env.example` to `.env` and add the keys (on Render: service → **Environment**).
+2. Restart, click **New Analysis**, choose **Live**.
+
+A live run needs Gemini plus at least one assistant provider. With fewer than five providers, the remaining slots take
+a second model from the configured ones. Pin a specific model with `<PROVIDER>_MODEL` (e.g. `GROQ_MODEL`), and change
+the counts with `QUERY_COUNT` / `TEST_MODEL_COUNT`. Free tiers are rate-limited, so calls are queued per provider and
+retried on `429`; a run takes about 1–3 minutes.
 
 ## Deploy (free)
 

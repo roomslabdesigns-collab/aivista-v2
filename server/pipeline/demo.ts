@@ -13,30 +13,16 @@ export const RELAY_SAMPLE: CompanyInput = {
   targetMarket: "North America & Europe",
   audience: "Mid-market RevOps & Sales Directors",
   competitors: ["HubSpot", "Salesforce", "Pipedrive", "Zoho"],
-  queryCount: 24,
+  queryCount: 7,
 };
 
+// The same five-assistant panel live mode uses by default: one model family per provider.
 const DEMO_MODELS: [string, string, boolean][] = [
-  ["Gemini + Google Search", "Google Gemini", true],
-  ["Llama 3.3 70B", "OpenRouter", false],
-  ["DeepSeek V3", "OpenRouter", false],
-  ["Qwen3 235B", "OpenRouter", false],
-  ["Mistral Small 3.2", "OpenRouter", false],
-  ["Gemma 3 27B", "OpenRouter", false],
-  ["GPT OSS 120B", "OpenRouter", false],
-  ["Kimi K2", "OpenRouter", false],
-  ["GLM 4.5 Air", "OpenRouter", false],
-  ["Nemotron Ultra 253B", "OpenRouter", false],
-  ["Llama 3.1 8B Instant", "Groq", false],
-  ["Llama 4 Scout", "Groq", false],
-  ["Qwen3 32B", "Groq", false],
-  ["GPT OSS 20B", "Groq", false],
-  ["Llama 3.3 70B", "Cerebras", false],
-  ["Qwen3 Coder 480B", "Cerebras", false],
-  ["Mistral Nemo", "Mistral", false],
-  ["Ministral 8B", "Mistral", false],
-  ["GPT-4.1 mini", "GitHub Models", false],
-  ["Phi-4", "GitHub Models", false],
+  ["Gemma 4 31B", "OpenRouter", false],
+  ["Llama 3.3 70B", "Groq", false],
+  ["Qwen 3 235B A22B", "Cerebras", false],
+  ["Mistral Small", "Mistral", false],
+  ["GPT 4.1 Mini", "GitHub Models", false],
 ];
 
 // Deterministic PRNG so the same company always produces the same demo story.
@@ -280,7 +266,7 @@ export const demoEngine: Engine = {
     const recommendations: Recommendation[] = [
       {
         id: "r1", title: `Create ${c0} Alternatives Page`, category: "Comparison content", impact: "high", confidence: 82, estimatedLift: 14,
-        description: `Could improve visibility for ${byIntent("alternative").length + 8} high-value queries and increase AI referral traffic by roughly 25%.`,
+        description: `Targets the switching queries where ${t} is weakest today, and could increase AI referral traffic by roughly 25%.`,
         actions: [`Publish a "${c0} alternatives" page that honestly compares 5–7 tools including ${t}`, "Lead with a clear 'best for' statement and a comparison table", "Add FAQ schema answering the top switching questions", "Get it linked from 2–3 industry roundups"],
         targetQueryIds: byIntent("alternative"),
       },

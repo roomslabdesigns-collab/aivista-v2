@@ -71,7 +71,7 @@ function AuthPage({ onAuthed }: { onAuthed: (u: SessionUser) => void }) {
         <div>
           <h1 className="text-3xl font-semibold leading-tight text-white">Find out why AI assistants recommend your competitors — and fix it.</h1>
           <ol className="mt-8 space-y-3 text-sm">
-            {["Investigate your website", "Generate real customer questions", "Test them across 20+ AI assistants", "Diagnose the gaps & get GEO recommendations", "Run experiments and measure impact"].map((s, i) => (
+            {["Investigate your website", "Generate real customer questions", "Test them across 5 AI assistants", "Diagnose the gaps & get GEO recommendations", "Run experiments and measure impact"].map((s, i) => (
               <li key={s} className="flex items-center gap-3">
                 <span className="grid size-6 place-items-center rounded-full bg-white/10 text-xs font-semibold text-white">{i + 1}</span>{s}
               </li>

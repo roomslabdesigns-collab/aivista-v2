@@ -57,7 +57,7 @@ From the crawled pages below, describe what the company sells and to whom.\n\n${
 
     // ── 3. Customer query generation ─────────────────────────────────
     ctx.step("queries", "running");
-    const n = clamp(input.queryCount, 5, 40, 10);
+    const n = clamp(input.queryCount, 3, 40, 7);
     const gen = await geminiJson<{ queries: { text: string; intent: string; persona?: string }[] }>(
       `Generate exactly ${n} realistic questions that potential customers of a ${site.category} type into AI assistants (ChatGPT, Gemini, Perplexity) while researching a purchase.
 Company being evaluated: ${input.companyName}. Its known competitors: ${input.competitors.join(", ") || "unknown"}.

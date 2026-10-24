@@ -6,7 +6,7 @@ import { CompetitorTable, InvestigationSummary, OpportunityCards, SectionCard } 
 import { Button, Card } from "../components/ui";
 
 export function Overview() {
-  const { report, detail, running, setModalOpen } = useApp();
+  const { report, detail, running, setModalOpen, config } = useApp();
   return (
     <div className="space-y-6">
       <div className="grid gap-6 xl:grid-cols-[360px_1fr]">
@@ -23,7 +23,7 @@ export function Overview() {
               <p className="mt-2 max-w-md text-sm text-slate-500">
                 {running
                   ? "The agent is crawling the site, generating customer queries and testing them across AI assistants. Metrics appear here when it finishes."
-                  : "Enter a company and the agent will crawl its website, generate real customer questions, test them across 20+ AI assistants and tell you why competitors win."}
+                  : `Enter a company and the agent will crawl its website, generate real customer questions, test them across ${config?.testModelCount ?? 5} AI assistants and tell you why competitors win.`}
               </p>
               {!running && <Button className="mt-6" onClick={() => setModalOpen(true)}>Launch New Analysis</Button>}
             </Card>
