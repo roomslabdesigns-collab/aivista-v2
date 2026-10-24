@@ -1,0 +1,44 @@
+{
+  "name": "aivista",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Agentic AI search visibility (GEO) platform",
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently -k -n api,web -c cyan,magenta \"npm:dev:api\" \"npm:dev:web\"",
+    "dev:api": "tsx watch server/index.ts",
+    "dev:web": "vite",
+    "build": "vite build",
+    "start": "tsx server/index.ts --prod",
+    "lint": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@libsql/client": "^0.15.9",
+    "cheerio": "^1.1.0",
+    "dotenv": "^17.2.0",
+    "drizzle-orm": "^0.44.2",
+    "express": "^5.1.0",
+    "lucide-react": "^0.525.0",
+    "motion": "^12.23.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-router-dom": "^7.6.3",
+    "recharts": "^3.1.0",
+    "tsx": "^4.20.3"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.1.11",
+    "@types/express": "^5.0.3",
+    "@types/node": "^22.16.0",
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
+    "@vitejs/plugin-react": "^4.6.0",
+    "concurrently": "^9.2.0",
+    "tailwindcss": "^4.1.11",
+    "typescript": "~5.8.3",
+    "vite": "^7.0.4"
+  },
+  "optionalDependencies": {
+    "playwright": "^1.55.1"
+  }
+}

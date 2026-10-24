@@ -1,0 +1,21 @@
+# Render Blueprint: https://render.com/docs/blueprint-spec
+# Render's free web services have no persistent disk, so use a free Turso database (DATABASE_URL + DATABASE_AUTH_TOKEN).
+services:
+  - type: web
+    name: aivista
+    runtime: docker
+    plan: free
+    healthCheckPath: /api/config
+    envVars:
+      - key: DATABASE_URL
+        sync: false # libsql://<your-db>.turso.io
+      - key: DATABASE_AUTH_TOKEN
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: OPENROUTER_API_KEY
+        sync: false
+      - key: GROQ_API_KEY
+        sync: false
+      - key: ALLOW_SIGNUP
+        value: "true"
