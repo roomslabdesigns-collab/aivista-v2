@@ -1,5 +1,17 @@
 # AIVista — AI Search Revenue Agent
 
+<p>
+  <img alt="React" src="https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&logoColor=black" />
+  <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-5.8-3178C6?style=flat-square&logo=typescript&logoColor=white" />
+  <img alt="Vite" src="https://img.shields.io/badge/Vite-7-646CFF?style=flat-square&logo=vite&logoColor=white" />
+  <img alt="Tailwind CSS" src="https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white" />
+  <img alt="Node.js" src="https://img.shields.io/badge/Node.js-22-5FA04E?style=flat-square&logo=nodedotjs&logoColor=white" />
+  <img alt="Express" src="https://img.shields.io/badge/Express-5-000000?style=flat-square&logo=express&logoColor=white" />
+  <img alt="Turso" src="https://img.shields.io/badge/Turso-libSQL-4FF8D2?style=flat-square&logo=turso&logoColor=black" />
+  <img alt="Google Gemini" src="https://img.shields.io/badge/Google_Gemini-brain-8E75B2?style=flat-square&logo=googlegemini&logoColor=white" />
+  <img alt="Render" src="https://img.shields.io/badge/Render-deployed-46E3B7?style=flat-square&logo=render&logoColor=black" />
+</p>
+
 **An agentic Generative Engine Optimization (GEO) platform.** Give it a company and it investigates how AI assistants
 talk about that brand compared with its competitors, explains *why* competitors get recommended instead, and tells you
 what to change. It then projects the impact and lets you measure it over time.
@@ -211,6 +223,63 @@ flowchart LR
 ---
 
 ## Tech stack
+
+<p align="center">
+  <a href="https://skillicons.dev"><img alt="React, TypeScript, Vite, Tailwind, Node.js, Express, SQLite, Docker, GitHub" src="https://skillicons.dev/icons?i=react,ts,vite,tailwind,nodejs,express,sqlite,docker,github&perline=9" /></a>
+</p>
+
+### Frontend
+<p>
+  <img alt="React" src="https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black" />
+  <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-5.8-3178C6?style=for-the-badge&logo=typescript&logoColor=white" />
+  <img alt="Vite" src="https://img.shields.io/badge/Vite-7-646CFF?style=for-the-badge&logo=vite&logoColor=white" />
+  <img alt="Tailwind CSS" src="https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white" />
+  <img alt="React Router" src="https://img.shields.io/badge/React_Router-7-CA4245?style=for-the-badge&logo=reactrouter&logoColor=white" />
+  <img alt="Recharts" src="https://img.shields.io/badge/Recharts-3-22B5BF?style=for-the-badge&logo=chartdotjs&logoColor=white" />
+  <img alt="Motion" src="https://img.shields.io/badge/Motion-12-0055FF?style=for-the-badge&logo=framer&logoColor=white" />
+  <img alt="Lucide" src="https://img.shields.io/badge/Lucide_Icons-F56565?style=for-the-badge&logo=lucide&logoColor=white" />
+</p>
+
+### Backend
+<p>
+  <img alt="Node.js" src="https://img.shields.io/badge/Node.js-22-5FA04E?style=for-the-badge&logo=nodedotjs&logoColor=white" />
+  <img alt="Express" src="https://img.shields.io/badge/Express-5-000000?style=for-the-badge&logo=express&logoColor=white" />
+  <img alt="tsx" src="https://img.shields.io/badge/tsx-4-3178C6?style=for-the-badge&logo=typescript&logoColor=white" />
+  <img alt="Server-Sent Events" src="https://img.shields.io/badge/Server--Sent_Events-live_progress-555555?style=for-the-badge" />
+</p>
+
+### Database
+<p>
+  <img alt="SQLite" src="https://img.shields.io/badge/SQLite-003B57?style=for-the-badge&logo=sqlite&logoColor=white" />
+  <img alt="Turso" src="https://img.shields.io/badge/Turso-libSQL-4FF8D2?style=for-the-badge&logo=turso&logoColor=black" />
+  <img alt="Drizzle ORM" src="https://img.shields.io/badge/Drizzle_ORM-0.44-C5F74F?style=for-the-badge&logo=drizzle&logoColor=black" />
+</p>
+
+### Crawling
+<p>
+  <img alt="Cheerio" src="https://img.shields.io/badge/Cheerio-1.2-E88C1F?style=for-the-badge&logo=cheerio&logoColor=white" />
+  <img alt="Playwright" src="https://img.shields.io/badge/Playwright-headless_Chromium-2EAD33?style=for-the-badge" />
+</p>
+
+### AI models
+<p>
+  <img alt="Google Gemini" src="https://img.shields.io/badge/Google_Gemini-3.5_Flash_(brain)-8E75B2?style=for-the-badge&logo=googlegemini&logoColor=white" />
+  <img alt="Groq" src="https://img.shields.io/badge/Groq-GPT--OSS_120B-F55036?style=for-the-badge" />
+  <img alt="Cohere" src="https://img.shields.io/badge/Cohere-Command_A-39594D?style=for-the-badge" />
+</p>
+
+### Hosting & deployment
+<p>
+  <img alt="Render" src="https://img.shields.io/badge/Render-free_web_service-46E3B7?style=for-the-badge&logo=render&logoColor=black" />
+  <img alt="Turso" src="https://img.shields.io/badge/Turso-free_database-4FF8D2?style=for-the-badge&logo=turso&logoColor=black" />
+  <img alt="UptimeRobot" src="https://img.shields.io/badge/UptimeRobot-keep--alive-3BD671?style=for-the-badge" />
+  <img alt="Docker" src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white" />
+  <img alt="Caddy" src="https://img.shields.io/badge/Caddy-auto_HTTPS-1F88C0?style=for-the-badge&logo=caddy&logoColor=white" />
+  <img alt="Oracle Cloud" src="https://img.shields.io/badge/Oracle_Cloud-Always_Free-F80000?style=for-the-badge" />
+  <img alt="GitHub" src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white" />
+</p>
+
+### Details
 
 | Layer | Technology | Version |
 |---|---|---|
