@@ -26,7 +26,5 @@ services:
         sync: false
       - key: GROQ_API_KEY
         sync: false
-      - key: MISTRAL_API_KEY
-        sync: false
       - key: COHERE_API_KEY
         sync: false

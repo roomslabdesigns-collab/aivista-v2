@@ -40,15 +40,14 @@ Without it the crawler still works; it just can't read pages that render entirel
 
 ## Live mode (real data, free APIs)
 
-Four free LLMs, no card needed: **one "brain"** that generates the queries and does the analysis, and **three AI
-assistants** that each answer every query. Each analysis generates **7 customer queries** → 7 × 3 = 21 answers.
+Three free LLMs, no card needed: **one "brain"** that generates the queries and does the analysis, and **two AI
+assistants** that each answer every query. Each analysis generates **7 customer queries** → 7 × 2 = 14 answers.
 
 | Role | Provider | Default model | Key |
 |---|---|---|---|
 | Brain (queries, analysis, recommendations) | Google Gemini | Gemini 3.5 Flash (falls back to other Flash models when busy) | `GEMINI_API_KEY` — https://aistudio.google.com/apikey |
 | Assistant 1 | Groq | GPT-OSS 120B | `GROQ_API_KEY` — https://console.groq.com/keys |
-| Assistant 2 | Mistral | Mistral Small | `MISTRAL_API_KEY` — https://console.mistral.ai (free "Experiment" plan) |
-| Assistant 3 | Cohere | Command A | `COHERE_API_KEY` — https://dashboard.cohere.com/api-keys (Trial key) |
+| Assistant 2 | Cohere | Command A | `COHERE_API_KEY` — https://dashboard.cohere.com/api-keys (Trial key) |
 
 1. Copy `.env.example` to `.env` and add the keys (on Render: service → **Environment**).
 2. Restart, click **New Analysis**, choose **Live**.
@@ -101,7 +100,7 @@ docker run -p 3001:3001 -v aivista-data:/app/data --env-file .env aivista
 | Crawling | fetch + Cheerio, same-domain crawl prioritizing pricing/product/compare pages; Playwright (headless Chromium) fallback for JS-rendered pages |
 | Auth | scrypt password hashing, hashed session tokens in SQLite, httpOnly cookies |
 | Scheduling | in-process scheduler (checks every minute) for monitoring re-runs |
-| AI | Gemini (brain) · Groq, Mistral, Cohere (assistants under test); Cerebras, NVIDIA NIM, GitHub Models optional |
+| AI | Gemini (brain) · Groq, Cohere (assistants under test); Cerebras, NVIDIA NIM, GitHub Models optional |
 
 ## How the numbers are computed
 

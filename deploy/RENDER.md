@@ -33,8 +33,7 @@ Keep both somewhere safe for step 2. The token is a password — don't share it 
    | `DATABASE_AUTH_TOKEN` | the Turso token from step 1 |
    | `GEMINI_API_KEY` | your Gemini key (or leave empty for demo mode only) |
    | `GROQ_API_KEY` | tester 1 — https://console.groq.com/keys |
-   | `MISTRAL_API_KEY` | tester 2 — https://console.mistral.ai |
-   | `COHERE_API_KEY` | tester 3 — https://dashboard.cohere.com/api-keys |
+   | `COHERE_API_KEY` | tester 2 — https://dashboard.cohere.com/api-keys |
 
    The testers are optional individually; live mode needs Gemini plus at least one of them.
 

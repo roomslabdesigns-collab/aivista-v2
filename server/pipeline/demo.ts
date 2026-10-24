@@ -16,10 +16,9 @@ export const RELAY_SAMPLE: CompanyInput = {
   queryCount: 7,
 };
 
-// The same three-assistant panel live mode uses by default: one model family per provider.
+// The same two-assistant panel live mode uses by default: one model family per provider.
 const DEMO_MODELS: [string, string, boolean][] = [
   ["GPT OSS 120B", "Groq", false],
-  ["Mistral Small", "Mistral", false],
   ["Command A", "Cohere", false],
 ];
 

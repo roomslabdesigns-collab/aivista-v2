@@ -1,5 +1,5 @@
 // AI search testing targets: free LLMs, one per provider, so each "AI assistant" in the panel is a
-// different model family (default panel: Groq, Mistral, Cohere). Gemini is the "brain" (query generation
+// different model family (default panel: Groq, Cohere). Gemini is the "brain" (query generation
 // + analysis) and is only added as a tester when GEMINI_GROUNDED_TESTING=true.
 import type { ModelInfo } from "../../shared/types.js";
 import { HttpError, createLimiter, fetchJson, withRetry } from "./limiter.js";
@@ -24,7 +24,7 @@ interface ProviderDef {
 }
 
 /** Number of AI assistants each query is tested against. */
-export const TEST_MODEL_COUNT = Number(process.env.TEST_MODEL_COUNT) || 3;
+export const TEST_MODEL_COUNT = Number(process.env.TEST_MODEL_COUNT) || 2;
 
 async function listModels(url: string, key?: string): Promise<{ id: string; [k: string]: any }[]> {
   const data = await fetchJson(url, { headers: key ? { authorization: `Bearer ${key}` } : {} }, 20_000);
@@ -43,7 +43,7 @@ function byVendor(ids: string[], vendors: string[]) {
 }
 
 // Order matters: the first TEST_MODEL_COUNT configured providers become testers 1, 2, 3…
-// Default panel: Groq, Mistral, Cohere. The providers after them are optional extras.
+// Default panel: Groq, Cohere. The providers after them are optional extras.
 export const PROVIDERS: ProviderDef[] = [
   {
     id: "groq",
@@ -59,17 +59,6 @@ export const PROVIDERS: ProviderDef[] = [
     extraBody: (model) => (model.includes("gpt-oss") ? { reasoning_effort: "low" } : {}),
     available: async (key) =>
       (await listModels("https://api.groq.com/openai/v1/models", key)).filter((m) => m.active !== false && !NON_CHAT.test(m.id)).map((m) => m.id),
-  },
-  {
-    id: "mistral",
-    name: "Mistral",
-    baseUrl: "https://api.mistral.ai/v1",
-    keyEnv: "MISTRAL_API_KEY",
-    modelEnv: "MISTRAL_MODEL",
-    preferred: ["mistral-small-latest", "mistral-medium-latest", "open-mistral-nemo"],
-    concurrency: 1,
-    minIntervalMs: 1300, // free: ~1 request / second
-    available: async (key) => (await listModels("https://api.mistral.ai/v1/models", key)).map((m) => m.id),
   },
   {
     id: "cohere",
