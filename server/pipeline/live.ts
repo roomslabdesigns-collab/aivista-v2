@@ -141,7 +141,7 @@ Rules:
       .map((r) => `Q(${r.queryId}): ${facts.queries.find((q) => q.id === r.queryId)?.text}\nA [${r.modelName}]: ${r.text.slice(0, 600)}`)
       .join("\n---\n");
 
-    const res = await geminiJson<{
+    type DiagnosisJson = {
       goal: string;
       findings: { title: string; description: string; metric: string; severity: string; queryIds: string[] }[];
       contentGaps: { topic: string; description: string; competitorsCovering: string[]; priority: string }[];
@@ -149,7 +149,10 @@ Rules:
         title: string; description: string; category: string; impact: string; confidence: number;
         estimatedLift: number; actions: string[]; queryIds: string[];
       }[];
-    }>(
+    };
+    const fallbackGoal = `Investigate why ${target} is underperforming in AI search recommendations.`;
+    // The AI answers are already collected; if the diagnosis call fails, keep the run with the rule-based findings.
+    const res = await geminiJson<DiagnosisJson>(
       `You are a Generative Engine Optimization (GEO) strategist. Diagnose why AI assistants recommend competitors instead of "${target}" and what to do so ${target} gets recommended first.
 
 COMPANY: ${target} — ${facts.site.summary}
@@ -169,7 +172,15 @@ ${losing || "(none)"}
 
 Give 2-3 extra findings that explain the WHY (positioning, missing content, third-party presence), 3-6 content gaps, and 4-6 prioritized recommendations. estimatedLift = expected increase in AI mention rate in percentage points (realistic: 2-20). confidence = 0-100.`,
       `{"goal": string (one sentence investigation goal), "findings": [{"title": string, "description": string, "metric": string (short, e.g. "3/5" or "40%"), "severity": "high"|"medium"|"low", "queryIds": string[]}], "contentGaps": [{"topic": string, "description": string, "competitorsCovering": string[], "priority": "high"|"medium"|"low"}], "recommendations": [{"title": string, "description": string, "category": string (e.g. "Comparison content", "Third-party citations", "Product documentation", "Structured data"), "impact": "high"|"medium"|"low", "confidence": number, "estimatedLift": number, "actions": string[] (3-5 concrete steps), "queryIds": string[]}]}`,
-    );
+    ).catch((err: Error) => {
+      ctx.log(`AI diagnosis failed: ${err.message.slice(0, 160)}`);
+      return null;
+    });
+    if (!res) {
+      ctx.step("diagnosis", "error", "AI diagnosis unavailable — showing rule-based findings; re-run for recommendations");
+      ctx.step("recommend", "skipped", "Needs the AI diagnosis");
+      return { goal: fallbackGoal, findings: [], contentGaps: [], recommendations: [] };
+    }
     const qids = new Set(facts.queries.map((q) => q.id));
     const findings: Finding[] = (res.findings ?? []).map((f, i) => ({
       id: `f-ai-${i + 1}`,
@@ -201,6 +212,6 @@ Give 2-3 extra findings that explain the WHY (positioning, missing content, thir
       .sort((a, b) => order[a.impact] - order[b.impact] || b.estimatedLift * b.confidence - a.estimatedLift * a.confidence);
     ctx.step("recommend", "done", `${recommendations.length} recommendations`);
 
-    return { goal: res.goal || `Investigate why ${target} is underperforming in AI search recommendations.`, findings, contentGaps, recommendations };
+    return { goal: res.goal || fallbackGoal, findings, contentGaps, recommendations };
   },
 };

@@ -24,14 +24,16 @@ async function generate(body: object) {
             method: "POST",
             headers: { "content-type": "application/json", "x-goog-api-key": apiKey() },
             body: JSON.stringify(body),
-          }, 120_000),
+          }, 180_000),
         ),
       );
     } catch (err) {
       lastErr = err;
-      const tryNext = err instanceof HttpError && [404, 429, 500, 503].includes(err.status);
+      // Overloaded, rate-limited, retired or too slow: the next (lighter) model usually answers.
+      const timedOut = err instanceof Error && (err.name === "TimeoutError" || err.name === "AbortError");
+      const tryNext = timedOut || (err instanceof HttpError && [404, 429, 500, 503].includes(err.status));
       if (!tryNext) throw err;
-      console.warn(`[gemini] ${m} unavailable (${err.status}), trying the next model`);
+      console.warn(`[gemini] ${m} unavailable (${timedOut ? "timeout" : (err as HttpError).status}), trying the next model`);
     }
   }
   throw lastErr;
