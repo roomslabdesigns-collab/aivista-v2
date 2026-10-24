@@ -247,7 +247,8 @@ await recoverInterrupted();
 await pruneSessions();
 startScheduler(liveReady);
 
-app.listen(port, () => {
+// HOST=127.0.0.1 on a server behind a reverse proxy (Caddy), so only the proxy can reach the app.
+app.listen(port, process.env.HOST || "0.0.0.0", () => {
   console.log(`AIVista API on http://localhost:${port}${PROD ? "" : "  (UI: http://localhost:5173)"}`);
   console.log(`Live mode: ${liveReady() ? "ready" : "not configured — demo mode only (add keys to .env)"}`);
 });
