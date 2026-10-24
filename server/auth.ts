@@ -57,10 +57,34 @@ async function loadUser(userId: string): Promise<SessionUser | undefined> {
     .from(users)
     .innerJoin(workspaces, eq(users.workspaceId, workspaces.id))
     .where(eq(users.id, userId));
-  return row;
+  return row && { ...row, authRequired: true };
+}
+
+/** Login is off unless REQUIRE_LOGIN=true: everyone then shares one default workspace. */
+export const loginRequired = () => process.env.REQUIRE_LOGIN === "true";
+
+const DEFAULT_WORKSPACE_ID = "default";
+const DEFAULT_USER: SessionUser = {
+  id: "default", email: "", name: "AIVista", workspaceId: DEFAULT_WORKSPACE_ID, workspaceName: "AIVista", authRequired: false,
+};
+
+/** Creates the shared workspace used when login is off; it adopts analyses that have no workspace yet. */
+export async function ensureDefaultWorkspace(onCreated: (workspaceId: string) => Promise<void>) {
+  const [existing] = await db.select({ id: workspaces.id }).from(workspaces).where(eq(workspaces.id, DEFAULT_WORKSPACE_ID));
+  if (!existing) {
+    await db.insert(workspaces).values({ id: DEFAULT_WORKSPACE_ID, name: "AIVista", createdAt: new Date().toISOString() });
+  }
+  await db.update(analyses).set({ workspaceId: DEFAULT_WORKSPACE_ID }).where(isNull(analyses.workspaceId));
+  const [any] = await db.select({ id: analyses.id }).from(analyses).where(eq(analyses.workspaceId, DEFAULT_WORKSPACE_ID)).limit(1);
+  if (!any) await onCreated(DEFAULT_WORKSPACE_ID);
 }
 
 export async function attachUser(req: Request, _res: Response, next: NextFunction) {
+  if (!loginRequired()) {
+    req.user = DEFAULT_USER;
+    next();
+    return;
+  }
   const token = readCookie(req, COOKIE);
   if (token) {
     const [s] = await db.select().from(sessions)

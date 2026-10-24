@@ -17,8 +17,9 @@ npm install
 npm run dev
 ```
 
-Open http://localhost:5173 and **sign up**. Every new workspace starts with a demo analysis of the fictional
-company **Relay CRM**. Each account has its own workspace; data is never shared between workspaces.
+Open http://localhost:5173 — it goes straight to the dashboard, which starts with a demo analysis of the
+fictional company **Relay CRM**. There's no sign-in by default; set `REQUIRE_LOGIN=true` to require
+email/password accounts, each with its own private workspace.
 
 For crawling JavaScript-heavy websites (single-page apps), install the headless browser once:
 
@@ -30,7 +31,7 @@ Without it the crawler still works; it just can't read pages that render entirel
 
 ## Features
 
-- **Accounts & workspaces** — email/password sign-in (scrypt-hashed passwords, httpOnly session cookies, login rate limiting)
+- **Optional accounts & workspaces** (`REQUIRE_LOGIN=true`) — email/password sign-in (scrypt-hashed passwords, httpOnly session cookies, login rate limiting)
 - **Investigation pipeline** — crawl → product understanding → customer queries → multi-LLM testing → analysis
 - **Dashboard** — KPIs, visibility trend with projected impact, competitor table, findings with evidence
 - **Experiments** — the agent proposes, you approve / start / complete

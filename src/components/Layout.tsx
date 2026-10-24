@@ -145,6 +145,12 @@ function UserMenu() {
   const { user, logout } = useAuth();
   const [open, setOpen] = useState(false);
   const initials = user.name.split(/\s+/).map((p) => p[0]).join("").slice(0, 2).toUpperCase();
+  if (!user.authRequired)
+    return (
+      <div className="grid size-9 place-items-center rounded-full bg-navy-900" title="AIVista">
+        <img src="/logo.svg" alt="" className="size-5" />
+      </div>
+    );
   return (
     <div className="relative">
       <button onClick={() => setOpen((o) => !o)} className="flex items-center gap-2.5 rounded-xl p-1 pr-2 hover:bg-slate-100">

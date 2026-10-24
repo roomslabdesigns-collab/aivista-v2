@@ -6,7 +6,7 @@ import { and, desc, eq } from "drizzle-orm";
 import type {
   AnalysisDetail, AppConfig, CompanyInput, Experiment, ExperimentStatus, Frequency, Mode, ModelResponse, Report,
 } from "../shared/types.js";
-import { attachUser, login, logout, pruneSessions, requireAuth, signup } from "./auth.js";
+import { attachUser, ensureDefaultWorkspace, login, loginRequired, logout, pruneSessions, requireAuth, signup } from "./auth.js";
 import { db, initDb } from "./db/client.js";
 import { analyses, experiments, responses, schedules } from "./db/schema.js";
 import { subscribe } from "./events.js";
@@ -27,6 +27,11 @@ const liveReady = () => geminiReady() && PROVIDERS.some((p) => !!process.env[p.k
 const ws = (req: Request) => req.user!.workspaceId;
 
 // ── Auth ───────────────────────────────────────────────────────────────
+// With login off there are no accounts, so sign-up and sign-in don't exist.
+app.use(["/api/auth/signup", "/api/auth/login"], (_req, res, next) => {
+  if (loginRequired()) return next();
+  res.status(404).json({ error: "Login is disabled on this server" });
+});
 app.post("/api/auth/signup", (req, res) =>
   // Every new workspace starts with the Relay CRM demo so the dashboard is never empty.
   signup(req, res, async (workspaceId) => void (await startAnalysis(RELAY_SAMPLE, "demo", workspaceId))),
@@ -245,10 +250,15 @@ const port = Number(PROD ? process.env.PORT || process.env.API_PORT : process.en
 await initDb();
 await recoverInterrupted();
 await pruneSessions();
+if (!loginRequired()) {
+  // First boot without login: the shared workspace starts with the Relay CRM demo.
+  await ensureDefaultWorkspace(async (workspaceId) => void (await startAnalysis(RELAY_SAMPLE, "demo", workspaceId)));
+}
 startScheduler(liveReady);
 
 // HOST=127.0.0.1 on a server behind a reverse proxy (Caddy), so only the proxy can reach the app.
 app.listen(port, process.env.HOST || "0.0.0.0", () => {
   console.log(`AIVista API on http://localhost:${port}${PROD ? "" : "  (UI: http://localhost:5173)"}`);
   console.log(`Live mode: ${liveReady() ? "ready" : "not configured — demo mode only (add keys to .env)"}`);
+  console.log(`Login: ${loginRequired() ? "required" : "off — anyone with the link can use the app (set REQUIRE_LOGIN=true to require accounts)"}`);
 });

@@ -269,6 +269,8 @@ export interface SessionUser {
   name: string;
   workspaceId: string;
   workspaceName: string;
+  /** false when the server runs without login (REQUIRE_LOGIN unset): there is no sign-out then. */
+  authRequired: boolean;
 }
 
 export type Frequency = "daily" | "weekly" | "monthly";

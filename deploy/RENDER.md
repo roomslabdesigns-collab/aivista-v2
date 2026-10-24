@@ -38,11 +38,13 @@ Keep both somewhere safe for step 2. The token is a password — don't share it 
 5. Click **Apply**. The first build takes 3–5 minutes. When the status shows **Live**, open the
    `https://aivista-….onrender.com` link at the top of the service page.
 
-## 3. Create your account and lock sign-ups
+## 3. Open the app
 
-1. Open your site and **Sign up**. Your workspace starts with a demo analysis.
-2. In Render: your service → **Environment** → set `ALLOW_SIGNUP` to `false` → **Save changes**
-   (Render redeploys automatically). Now nobody else can create an account.
+Open your site — there's no sign-in page; it goes straight to the dashboard with a demo analysis.
+
+> **Anyone who has the link can use the app**, see your analyses, and (once API keys are set)
+> spend your free AI quotas. Keep the link private. To require accounts instead, set
+> `REQUIRE_LOGIN` to `true` in Render → **Environment**, sign up, then set `ALLOW_SIGNUP` to `false`.
 
 ## 4. Keep it awake (so monitoring runs on schedule)
 

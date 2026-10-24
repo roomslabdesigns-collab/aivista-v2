@@ -16,8 +16,8 @@ services:
         value: "22"
       - key: CRAWL_JS_FALLBACK
         value: "false"
-      - key: ALLOW_SIGNUP
-        value: "true"
+      - key: REQUIRE_LOGIN
+        value: "false" # no sign-in page; set "true" to require accounts
       - key: DATABASE_URL
         sync: false # libsql://<your-db>-<your-org>.turso.io
       - key: DATABASE_AUTH_TOKEN
