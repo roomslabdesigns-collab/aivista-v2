@@ -96,7 +96,7 @@ export function Meter({ value, color = "bg-brand-600" }: { value: number; color?
 
 /** Wraps a page that needs a finished report: shows progress or empty states otherwise. */
 export function RequireReport({ children }: { children: (r: NonNullable<ReturnType<typeof useApp>["report"]>) => ReactNode }) {
-  const { report, running, detail, analyses, setModalOpen } = useApp();
+  const { report, running, detail, currentId, setModalOpen, showDemo } = useApp();
   if (report) return <>{children(report)}</>;
   if (running)
     return (
@@ -114,10 +114,20 @@ export function RequireReport({ children }: { children: (r: NonNullable<ReturnTy
         <Button className="mt-5" onClick={() => setModalOpen(true)}>Launch a new analysis</Button>
       </Card>
     );
+  if (currentId)
+    return (
+      <Card className="flex justify-center p-12">
+        <Loader2 className="size-5 animate-spin text-brand-600" />
+      </Card>
+    );
   return (
     <Card className="p-12 text-center">
-      <p className="font-medium">{analyses.length ? "Loading…" : "No analyses yet"}</p>
-      {!analyses.length && <Button className="mt-4" onClick={() => setModalOpen(true)}>Launch your first analysis</Button>}
+      <p className="font-medium">No analysis open</p>
+      <p className="mt-1 text-sm text-slate-500">Launch a new analysis, load the demo data, or open a past analysis from the sidebar.</p>
+      <div className="mt-5 flex justify-center gap-3">
+        <Button variant="secondary" onClick={() => void showDemo()}>Load demo data</Button>
+        <Button onClick={() => setModalOpen(true)}>New Analysis</Button>
+      </div>
     </Card>
   );
 }

@@ -25,19 +25,11 @@ interface AppState {
 
 const Ctx = createContext<AppState | null>(null);
 
-const STORAGE_KEY = "aivista.currentAnalysis";
-const readStored = () => {
-  try {
-    return localStorage.getItem(STORAGE_KEY);
-  } catch {
-    return null;
-  }
-};
-
 export function AppProvider({ children }: { children: ReactNode }) {
   const [config, setConfig] = useState<AppConfig | null>(null);
   const [analyses, setAnalyses] = useState<AnalysisSummary[]>([]);
-  const [currentId, setCurrentId] = useState<string | null>(readStored());
+  // The app always opens on an empty screen; past analyses are opened from the sidebar or Reports.
+  const [currentId, setCurrentId] = useState<string | null>(null);
   const [detail, setDetail] = useState<AnalysisDetail | null>(null);
   const [steps, setSteps] = useState<StepState[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
@@ -51,9 +43,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     api.config().then(setConfig).catch(() => {});
-    refreshList().then((list) => {
-      setCurrentId((cur) => (cur && list.some((a) => a.id === cur) ? cur : (list.find((a) => a.status === "completed") ?? list[0])?.id ?? null));
-    });
+    void refreshList();
   }, [refreshList]);
 
   const loadDetail = useCallback(async (id: string) => {
@@ -65,11 +55,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   // Load the selected analysis and follow its live progress.
   useEffect(() => {
-    if (!currentId) return;
-    try {
-      localStorage.setItem(STORAGE_KEY, currentId);
-    } catch {
-      /* storage unavailable */
+    if (!currentId) {
+      setDetail(null);
+      setSteps([]);
+      return;
     }
     let stop: (() => void) | undefined;
     let cancelled = false;
@@ -96,20 +85,19 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }, [refreshList]);
 
   const showDemo = useCallback(async () => {
-    const list = await refreshList();
-    const existing = list.find((a) => a.mode === "demo" && a.status === "completed");
+    const [list, sample] = await Promise.all([refreshList(), api.sample()]);
+    const existing = list.find((a) => a.mode === "demo" && a.status === "completed" && a.companyName === sample.companyName);
     if (existing) {
       setCurrentId(existing.id);
       return;
     }
-    const sample = await api.sample();
     await launch(sample, "demo");
   }, [refreshList, launch]);
 
   const remove = useCallback(async (id: string) => {
     await api.remove(id);
-    const list = await refreshList();
-    if (id === currentId) setCurrentId(list[0]?.id ?? null);
+    await refreshList();
+    if (id === currentId) setCurrentId(null);
   }, [currentId, refreshList]);
 
   const value = useMemo<AppState>(() => ({

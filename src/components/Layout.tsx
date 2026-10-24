@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import {
-  Bell, CalendarClock, ChevronDown, ChevronsLeft, FileText, FlaskConical, Home, Layers, Lightbulb, Link2, LogOut, Menu,
-  MessagesSquare, Plus, Search, Sparkles, Swords,
+  Bell, CalendarClock, ChevronDown, ChevronsLeft, Database, FileText, FlaskConical, Home, Layers, Lightbulb, Link2, LogOut, Menu,
+  Loader2, MessagesSquare, Plus, Search, Sparkles, Swords,
 } from "lucide-react";
 import { useAuth } from "../auth";
 import { useApp } from "../state";
@@ -99,6 +99,7 @@ function RunPicker() {
       <div className="relative">
         <select value={currentId ?? ""} onChange={(e) => select(e.target.value)}
           className="w-full appearance-none rounded-xl bg-white/5 px-3 py-2 pr-8 text-[13px] text-white outline-none ring-1 ring-white/10 focus:ring-brand-500">
+          {!currentId && <option value="" disabled className="text-slate-900">Open a past analysis…</option>}
           {analyses.map((a) => (
             <option key={a.id} value={a.id} className="text-slate-900">
               {a.companyName} · {new Date(a.createdAt).toLocaleDateString()} · {a.mode}{a.status !== "completed" ? ` (${a.status})` : ""}
@@ -112,8 +113,18 @@ function RunPicker() {
 }
 
 function Topbar({ onMenu }: { onMenu: () => void }) {
-  const { setModalOpen, search, setSearch, running, detail } = useApp();
+  const { setModalOpen, search, setSearch, running, detail, showDemo } = useApp();
   const navigate = useNavigate();
+  const [demoBusy, setDemoBusy] = useState(false);
+  const loadDemo = async () => {
+    setDemoBusy(true);
+    try {
+      await showDemo();
+      navigate("/");
+    } finally {
+      setDemoBusy(false);
+    }
+  };
   return (
     <header className="flex items-center gap-3 border-b border-slate-200/70 bg-white/80 px-4 py-3 backdrop-blur sm:px-8">
       <button onClick={onMenu} className="rounded-lg p-2 text-slate-500 hover:bg-slate-100 lg:hidden" aria-label="Open menu">
@@ -125,6 +136,11 @@ function Topbar({ onMenu }: { onMenu: () => void }) {
           placeholder="Search queries, competitors, insights…"
           className="w-full rounded-xl border border-slate-200 bg-white py-2 pl-10 pr-4 text-sm outline-none placeholder:text-slate-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-100" />
       </div>
+      <button onClick={loadDemo} disabled={demoBusy} title="Load demo data"
+        className="inline-flex shrink-0 items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium text-brand-600 ring-1 ring-brand-200 hover:bg-brand-50 disabled:opacity-60 sm:px-4">
+        {demoBusy ? <Loader2 className="size-4 animate-spin" /> : <Database className="size-4" />}
+        <span className="hidden sm:inline">Load demo data</span>
+      </button>
       <div className="ml-auto flex items-center gap-3">
         {running && <Badge tone="blue" className="hidden sm:inline-flex"><span className="size-1.5 animate-pulse rounded-full bg-brand-600" />Investigating {detail?.summary.companyName}</Badge>}
         {detail && <Badge tone={detail.summary.mode === "live" ? "green" : "amber"} className="hidden md:inline-flex">{detail.summary.mode === "live" ? "Live data" : "Demo data"}</Badge>}

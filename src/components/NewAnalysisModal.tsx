@@ -1,7 +1,7 @@
 import { useState, type FormEvent, type ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "motion/react";
-import { AlertTriangle, Database, Diamond, Loader2, Sparkles, X } from "lucide-react";
+import { AlertTriangle, Diamond, Loader2, Sparkles, X } from "lucide-react";
 import type { CompanyInput, Mode } from "../../shared/types";
 import { api } from "../api";
 import { useApp } from "../state";
@@ -10,29 +10,13 @@ import { cx } from "./ui";
 const EMPTY = { websiteUrl: "", companyName: "", industry: "", targetMarket: "", audience: "", competitors: "" };
 
 export function NewAnalysisModal() {
-  const { setModalOpen, launch, config, showDemo } = useApp();
+  const { setModalOpen, launch, config } = useApp();
   const navigate = useNavigate();
   const [form, setForm] = useState(EMPTY);
   const queryCount = config?.queryCount ?? 7;
   const [mode, setMode] = useState<Mode>(config?.liveReady ? "live" : "demo");
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
-  const [demoBusy, setDemoBusy] = useState(false);
-
-  // Opens the Relay CRM demo analysis (creating it the first time) without touching the form.
-  async function loadDemo() {
-    setDemoBusy(true);
-    setError(null);
-    try {
-      await showDemo();
-      close();
-      navigate("/");
-    } catch (err) {
-      setError((err as Error).message);
-    } finally {
-      setDemoBusy(false);
-    }
-  }
 
   const set =(k: keyof typeof EMPTY) => (e: React.ChangeEvent<HTMLInputElement>) => setForm((f) => ({ ...f, [k]: e.target.value }));
   const close = () => setModalOpen(false);
@@ -109,10 +93,6 @@ export function NewAnalysisModal() {
         </div>
 
         <div className="flex items-center justify-end gap-3 border-t border-slate-100 px-6 py-4">
-          <button type="button" onClick={loadDemo} disabled={demoBusy || busy}
-            className="mr-auto inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-medium text-brand-600 ring-1 ring-brand-200 hover:bg-brand-50 disabled:opacity-60">
-            {demoBusy ? <Loader2 className="size-4 animate-spin" /> : <Database className="size-4" />}Load demo data
-          </button>
           <button type="button" onClick={close} className="rounded-xl px-4 py-2 text-sm ring-1 ring-slate-200 hover:bg-slate-50">Cancel</button>
           <button type="submit" disabled={busy} className="inline-flex items-center gap-2 rounded-xl bg-brand-600 px-4 py-2 text-sm font-medium text-white hover:bg-brand-700 disabled:opacity-60">
             {busy ? <Loader2 className="size-4 animate-spin" /> : <Sparkles className="size-4" />}Start Investigation
