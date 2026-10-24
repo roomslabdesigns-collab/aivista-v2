@@ -12,6 +12,8 @@ interface AppState {
   running: boolean;
   select: (id: string) => void;
   launch: (input: CompanyInput, mode: Mode) => Promise<void>;
+  /** Opens the most recent demo analysis, creating one first if none exists. */
+  showDemo: () => Promise<void>;
   remove: (id: string) => Promise<void>;
   reload: () => Promise<void>;
   reloadList: () => Promise<unknown>;
@@ -93,6 +95,17 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setCurrentId(id);
   }, [refreshList]);
 
+  const showDemo = useCallback(async () => {
+    const list = await refreshList();
+    const existing = list.find((a) => a.mode === "demo" && a.status === "completed");
+    if (existing) {
+      setCurrentId(existing.id);
+      return;
+    }
+    const sample = await api.sample();
+    await launch(sample, "demo");
+  }, [refreshList, launch]);
+
   const remove = useCallback(async (id: string) => {
     await api.remove(id);
     const list = await refreshList();
@@ -109,6 +122,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     running: detail?.summary.status === "running",
     select: setCurrentId,
     launch,
+    showDemo,
     remove,
     reload: async () => {
       if (currentId) await loadDetail(currentId);
@@ -118,7 +132,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setModalOpen,
     search,
     setSearch,
-  }), [config, analyses, currentId, detail, steps, launch, remove, loadDetail, refreshList, modalOpen, search]);
+  }), [config, analyses, currentId, detail, steps, launch, showDemo, remove, loadDetail, refreshList, modalOpen, search]);
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }

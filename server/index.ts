@@ -35,10 +35,8 @@ app.use(["/api/auth/signup", "/api/auth/login"], (_req, res, next) => {
   if (loginRequired()) return next();
   res.status(404).json({ error: "Login is disabled on this server" });
 });
-app.post("/api/auth/signup", (req, res) =>
-  // Every new workspace starts with the Relay CRM demo so the dashboard is never empty.
-  signup(req, res, async (workspaceId) => void (await startAnalysis(RELAY_SAMPLE, "demo", workspaceId))),
-);
+// New workspaces start empty; the demo is loaded on request from the New Analysis window.
+app.post("/api/auth/signup", (req, res) => signup(req, res, async () => {}));
 app.post("/api/auth/login", login);
 app.post("/api/auth/logout", logout);
 app.get("/api/auth/me", (req, res) => {
@@ -255,8 +253,8 @@ await initDb();
 await recoverInterrupted();
 await pruneSessions();
 if (!loginRequired()) {
-  // First boot without login: the shared workspace starts with the Relay CRM demo.
-  await ensureDefaultWorkspace(async (workspaceId) => void (await startAnalysis(RELAY_SAMPLE, "demo", workspaceId)));
+  // The shared workspace starts empty; the demo is loaded on request from the New Analysis window.
+  await ensureDefaultWorkspace(async () => {});
 }
 startScheduler(liveReady);
 
