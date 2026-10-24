@@ -10,7 +10,8 @@
     "dev:web": "vite",
     "build": "vite build",
     "start": "tsx server/index.ts --prod",
-    "lint": "tsc --noEmit"
+    "lint": "tsc --noEmit",
+    "screenshots": "tsx scripts/screenshots.mts"
   },
   "dependencies": {
     "@libsql/client": "^0.15.9",

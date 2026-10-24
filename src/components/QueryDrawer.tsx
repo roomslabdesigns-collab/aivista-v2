@@ -65,7 +65,12 @@ export function QueryEvidence({ report, query }: { report: Report; query: Genera
         <Badge tone={intentTone(query.intent)}>{query.intent}</Badge>
         <span className="text-sm font-semibold">"{query.text}"</span>
       </div>
-      {sample && <p className="mt-3 line-clamp-4 whitespace-pre-line rounded-xl bg-slate-50 px-4 py-3 text-[13px] text-slate-600">{stripMd(sample.text)}</p>}
+      {sample && (
+        // Padding on the wrapper, clamp on the text: otherwise half of the 5th line peeks through the padding.
+        <div className="mt-3 rounded-xl bg-slate-50 px-4 py-3">
+          <p className="line-clamp-4 whitespace-pre-line text-[13px] text-slate-600">{stripMd(sample.text)}</p>
+        </div>
+      )}
       <div className="mt-3 flex flex-wrap items-center gap-1.5">
         <span className="mr-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-400">Brands</span>
         {brands.map((b) => <Badge key={b} tone={b === target ? "blue" : "slate"}>{b}</Badge>)}
