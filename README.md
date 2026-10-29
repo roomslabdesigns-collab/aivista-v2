@@ -1,4 +1,4 @@
-# AIVista — AI Search Revenue Agent
+# AIVista — AI Search Visibility Agent
 
 <p>
   <img alt="React" src="https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&logoColor=black" />
